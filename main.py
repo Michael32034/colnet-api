@@ -22,7 +22,7 @@ class Lesson(BaseModel):
 
 logger = logging.getLogger("uvicorn")
 
-os.system("tree")
+os.system("ls")
 groups_file = Path("./data/group.json")
 schedule_file = Path("./data/schedule.json")
 call_schedule_file = Path("./data/call_schedule.json")
