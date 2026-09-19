@@ -20,9 +20,8 @@ class Lesson(BaseModel):
     end: str
 
 
-logger = logging.getLogger("uvicorn")
+logger = logging.getLogger("fastapi_cli")
 
-os.system("ls")
 groups_file = Path("./data/group.json")
 schedule_file = Path("./data/schedule.json")
 call_schedule_file = Path("./data/call_schedule.json")
@@ -36,14 +35,14 @@ call_schedule = TypeAdapter(list[Lesson]).validate_json(call_schedule_file.read_
 groups_by_id = {group.id: group for group in groups}
 groups_by_name = {group.name: group for group in groups}
 
-origin = os.getenv("ORIGIN", "http://127.0.0.1:5500")
-logger.info(f"Origin: {origin}")
+origins = os.getenv("ORIGINS", "http://127.0.0.1:5500").split()
+logger.info(f"Origins: {origins}")
 
 
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[origin],
+    allow_origins=origins,
     allow_credentials=True,
     allow_headers=["*"],
     allow_methods=["*"],
