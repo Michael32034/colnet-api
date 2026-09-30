@@ -9,7 +9,6 @@ from pathlib import Path
 
 
 class Groups(BaseModel):
-    id: int
     name: str
     link: str | None
     subjects: list[str]
@@ -32,7 +31,6 @@ schedule = TypeAdapter(dict[str, dict[str, list[str]]]).validate_json(
 )
 call_schedule = TypeAdapter(list[Lesson]).validate_json(call_schedule_file.read_text())
 
-groups_by_id = {group.id: group for group in groups}
 groups_by_name = {group.name: group for group in groups}
 
 origins = os.getenv("ORIGINS", "http://127.0.0.1:5500").split()
@@ -47,13 +45,6 @@ app.add_middleware(
     allow_headers=["*"],
     allow_methods=["*"],
 )
-
-
-def found_group_by_id(id: int):
-    try:
-        return groups_by_id[id]
-    except KeyError:
-        return None
 
 
 def found_group_by_name(name: str):
@@ -73,15 +64,6 @@ def get_call_schedule():
     return call_schedule
 
 
-@app.get("/group/by_id/{id}")
-def get_group_by_id(id: int):
-    group = found_group_by_id(id)
-    if group:
-        return group
-    else:
-        raise HTTPException(status_code=404, detail=f"Group with id:{id} doesn't exist")
-
-
 @app.get("/group/by_name/{name}")
 def get_group_by_name(name: str):
     group = found_group_by_name(name)
@@ -91,15 +73,6 @@ def get_group_by_name(name: str):
         raise HTTPException(
             status_code=404, detail=f"Group with name:{name} doesn't exist"
         )
-
-
-@app.get("/group/schedule/by_id/{id}")
-def get_group_schedule_by_id(id: int):
-    group = found_group_by_id(id)
-    if group:
-        return schedule[group.name]
-    else:
-        raise HTTPException(status_code=404, detail=f"Group with id:{id} doesn't exist")
 
 
 @app.get("/group/schedule/by_name/{name}")
