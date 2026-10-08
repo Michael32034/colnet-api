@@ -18,7 +18,7 @@ call_schedule_file = Path("./data/call_schedule.json")
 call_schedule = TypeAdapter(list[Lesson]).validate_json(call_schedule_file.read_text())
 
 conn_string = os.environ.get(
-    "DB", "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+    "DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
 )
 
 origins = os.getenv("ORIGINS", "http://127.0.0.1:5500").split()
