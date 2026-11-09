@@ -14,11 +14,9 @@ from db import Database, Lesson, Group, ReplacementRecord, tablename
 
 logger = logging.getLogger("uvicorn")
 
-call_schedule_file = Path("./data/call_schedule.json")
-call_schedule = TypeAdapter(list[Lesson]).validate_json(call_schedule_file.read_text())
-
 conn_string = os.environ.get(
-    "DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+    "DATABASE_URL",
+    "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable",
 )
 
 origins = os.getenv("ORIGINS", "http://127.0.0.1:5500").split()
@@ -49,8 +47,12 @@ async def get_groups(conn: DBDep) -> list[Group]:
 
 
 @app.get("/call_schedule")
-def get_call_schedule():
-    return call_schedule
+async def get_call_schedule(conn: DBDep):
+    async with conn.cursor(row_factory=dict_row) as cur:
+        groups = await (
+            await cur.execute(t'SELECT start, "end" FROM call_schedule;')
+        ).fetchall()
+        return groups
 
 
 @app.get("/group/by_name/{name}")
