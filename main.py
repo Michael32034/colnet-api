@@ -12,7 +12,7 @@ from psycopg.rows import TupleRow, class_row, dict_row
 
 from db import Database, Lesson, Group, ReplacementRecord, tablename
 
-logger = logging.getLogger("uvicorn")
+logger = logging.getLogger("fastapi_cli")
 
 conn_string = os.environ.get(
     "DATABASE_URL",
