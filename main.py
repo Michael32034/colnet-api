@@ -19,7 +19,7 @@ conn_string = os.environ.get(
     "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable",
 )
 
-origins = os.getenv("ORIGINS", "http://127.0.0.1:5500").split()
+origins = os.getenv("ORIGINS", "http://127.0.0.1:5500").split(",")
 logger.info(f"Origins: {origins}")
 
 
